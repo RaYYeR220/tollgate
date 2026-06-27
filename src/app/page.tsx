@@ -1,103 +1,140 @@
-import Image from "next/image";
+import Link from "next/link";
+import { Masthead } from "@/components/Masthead";
+import { ArticleCard } from "@/components/ArticleCard";
+import { CoverPlate } from "@/components/CoverPlate";
+import { LiveActivity } from "@/components/LiveActivity";
+import { ARTICLES, formatPrice } from "@/lib/content";
 
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const featured = ARTICLES[0];
+  const rest = ARTICLES.slice(1);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+  return (
+    <main>
+      <Masthead />
+
+      {/* hero proposition */}
+      <section className="mx-auto max-w-6xl px-5 pt-16 pb-12 sm:pt-24">
+        <div className="grid items-end gap-10 lg:grid-cols-[1.3fr_1fr]">
+          <div>
+            <div className="kicker anim-fadeup">A reader for small money</div>
+            <h1 className="display anim-fadeup reveal-2 mt-4 text-[clamp(2.8rem,7vw,5.2rem)] text-ink">
+              Read what&rsquo;s
+              <br />
+              worth{" "}
+              <em className="italic text-vermilion">paying</em> for.
+            </h1>
+            <p className="anim-fadeup reveal-3 mt-6 max-w-xl text-[1.2rem] leading-relaxed text-ink-soft">
+              Unlock a story or tip a writer with a single tap — no wallet, no
+              seed phrase, no gas, no popup. The price is small. The friction is
+              gone.
+            </p>
+            <div className="anim-fadeup reveal-4 mt-8 flex flex-wrap items-center gap-4">
+              <Link
+                href={`/read/${featured.slug}`}
+                className="rounded-full bg-ink px-6 py-3 font-mono text-[0.78rem] uppercase tracking-[0.14em] text-paper transition hover:bg-vermilion"
+              >
+                Start reading
+              </Link>
+              <span className="font-mono text-[0.78rem] text-ink-faint">
+                Payments settle on Arbitrum — you&rsquo;ll never see a chain.
+              </span>
+            </div>
+          </div>
+
+          <Link
+            href={`/read/${featured.slug}`}
+            className="group anim-fadeup reveal-3 block"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+            <CoverPlate
+              tone={featured.tone}
+              plate={featured.plate}
+              label={featured.kicker}
+              big
+              className="h-72 w-full rounded-[14px] shadow-[var(--shadow-lift)]"
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+            <div className="mt-4 flex items-center justify-between">
+              <span className="kicker">Featured</span>
+              <span className="rounded-full border border-vermilion/30 bg-vermilion/5 px-2.5 py-0.5 font-mono text-[0.74rem] text-vermilion-deep">
+                {formatPrice(featured.priceCents)}
+              </span>
+            </div>
+            <h2 className="display mt-2 text-[1.9rem] leading-[1.04] text-ink transition-colors group-hover:text-vermilion-deep">
+              {featured.title}
+            </h2>
+            <p className="mt-2 text-[1rem] leading-relaxed text-ink-soft">
+              {featured.dek}
+            </p>
+          </Link>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+      </section>
+
+      {/* how it works */}
+      <section>
+        <div className="mx-auto grid max-w-6xl gap-px px-5 pb-4 pt-2 sm:grid-cols-3">
+          <Step n="i" title="Sign in with email">
+            A secure account is created in the background. No extension, no
+            recovery phrase.
+          </Step>
+          <Step n="ii" title="Tap to unlock">
+            Your balance — wherever it lives — is routed and settled on Arbitrum
+            in one gesture.
+          </Step>
+          <Step n="iii" title="Read">
+            The page is yours. A receipt waits, quietly, for the one time you
+            want to look.
+          </Step>
+        </div>
+      </section>
+
+      <LiveActivity />
+
+      {/* the stand */}
+      <section className="mx-auto max-w-6xl px-5 py-16">
+        <div className="mb-10 flex items-end justify-between">
+          <h2 className="display text-[2rem] text-ink">On the stand</h2>
+          <span className="label-mono">{ARTICLES.length} pieces</span>
+        </div>
+        <div className="grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+          {rest.map((a) => (
+            <ArticleCard key={a.slug} article={a} />
+          ))}
+        </div>
+      </section>
+
+      <footer className="border-t border-ink/15">
+        <div className="mx-auto flex max-w-6xl flex-col gap-2 px-5 py-10 sm:flex-row sm:items-center sm:justify-between">
+          <span className="display text-[1.3rem] text-ink">Tollgate</span>
+          <span className="font-mono text-[0.74rem] text-ink-faint">
+            Small money for good work · settled on Arbitrum · powered by Universal
+            Accounts &amp; EIP-7702
+          </span>
+        </div>
       </footer>
+    </main>
+  );
+}
+
+function Step({
+  n,
+  title,
+  children,
+}: {
+  n: string;
+  title: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="flex gap-4 px-2 py-5">
+      <span className="display text-[1.6rem] italic text-vermilion/70">{n}.</span>
+      <div>
+        <div className="font-mono text-[0.78rem] uppercase tracking-[0.12em] text-ink">
+          {title}
+        </div>
+        <p className="mt-1.5 text-[0.92rem] leading-relaxed text-ink-soft">
+          {children}
+        </p>
+      </div>
     </div>
   );
 }
