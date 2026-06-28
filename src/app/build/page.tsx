@@ -18,7 +18,7 @@ const tollgate = createTollgate({
 
 export async function GET(req, { params }) {
   const { id } = await params;
-  const payer = req.headers.get("x-tollgate-payer") ?? "";
+  const payer = await verifiedPayer(req); // from the auth session, not a header
 
   // entitlement is read from chain — the client cannot forge it
   if (!(await tollgate.hasAccess(payer, id))) {

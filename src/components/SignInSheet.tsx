@@ -96,6 +96,7 @@ export function SignInSheet({
             />
 
             <button
+              data-rec="continue"
               type="submit"
               disabled={busy}
               className="mt-4 flex w-full items-center justify-center gap-2 rounded-lg bg-ink px-5 py-3.5 font-mono text-[0.82rem] uppercase tracking-[0.14em] text-paper transition hover:bg-vermilion disabled:opacity-70"

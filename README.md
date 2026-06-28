@@ -70,6 +70,80 @@ bookkeeping that dashboards render straight from chain state with no indexer.
 
 Tested with Foundry (27 tests incl. fuzzing of the fee math). See [`contracts/`](contracts).
 
+## Two-sided, not just a paywall
+
+- **Creator Studio (`/studio`)** — every unlock pays the writer instantly (non-custodial, no payout
+  schedule). The studio reads earnings, unlock counts, per-piece revenue and a payout balance
+  straight from `TollgateAccessRegistry` — no indexer — and lets a creator publish a piece and set
+  its price on-chain.
+- **Reader Account (`/account`)** — a library of everything you've unlocked, your receipts, and one
+  **unified balance** the Universal Account pools across chains (top-up / withdraw).
+- **Live activity** — the newsstand carries a real-time ticker of unlocks read from `AccessGranted`
+  events.
+
+## For builders — drop a tollgate onto anything
+
+One verified contract, a dependency-free SDK, a Next.js middleware, an embeddable button, and an
+x402 rail. See [`/build`](src/app/build) and [`src/sdk`](src/sdk).
+
+**Protect a route** — the body never ships until the registry says this reader paid:
+
+```ts
+// app/api/content/[id]/route.ts
+import { createTollgate } from "@tollgate/sdk";
+import { PAID } from "@/content";
+
+const tollgate = createTollgate({ registry: process.env.TOLLGATE_REGISTRY! }); // Arbitrum One
+
+export async function GET(req, { params }) {
+  const { id } = await params;
+  const payer = await verifiedPayer(req); // derived from the authenticated session, not a header
+
+  if (!(await tollgate.hasAccess(payer, id))) {
+    return Response.json(
+      { error: "payment_required", payment: tollgate.requirements(id, 50) },
+      { status: 402 },
+    );
+  }
+  return Response.json({ paragraphs: PAID[id] }); // released only after settlement
+}
+```
+
+**Pay from a Universal Account** — one tap, gasless, cross-chain:
+
+```ts
+import { CHAIN_ID } from "@particle-network/universal-account-sdk";
+
+const tx = await ua.createUniversalTransaction({
+  chainId: CHAIN_ID.ARBITRUM_MAINNET_ONE,
+  transactions: [approveUSDC(price), purchase(contentId)], // batched into one EIP-7702 tx
+});
+await ua.sendTransaction(tx, signature, authorizations); // funds routed from whatever chain you hold
+```
+
+**Or drop in a button** — no framework needed:
+
+```html
+<script src="https://tollgate.xyz/embed.js" async></script>
+<tollgate-unlock content="0x9a1d…" price="50">Read the rest · 50¢</tollgate-unlock>
+```
+
+**Sell to agents** — the same gate answers x402, so an autonomous agent can pay-per-read:
+
+```ts
+const res = await fetch("https://tollgate.xyz/api/agent/0x9a1d…", {
+  headers: { "payment-payer": agent.address },
+});
+if (res.status === 402) {
+  const { accepts } = await res.json(); // USDC on Arbitrum, exact amount
+  const signature = await agent.payWithUniversalAccount(accepts[0]);
+  const paid = await fetch(res.url, {
+    headers: { "payment-payer": agent.address, "payment-signature": signature },
+  });
+  const { markdown } = await paid.json(); // the full piece, ready to read
+}
+```
+
 ## Tech
 
 - **Next.js 15 / React 19 / TypeScript / Tailwind 4**

@@ -23,7 +23,7 @@ export function TicketStub({
   });
 
   return (
-    <aside className="anim-stub relative mt-2 select-text">
+    <aside data-rec="receipt" className="anim-stub relative mt-2 select-text">
       <div className="perf-top h-3 bg-paper-3" />
       <div className="relative rounded-b-[12px] border border-t-0 border-ink/15 bg-paper-2/70 p-5 shadow-[var(--shadow-stub)]">
         <div className="absolute right-5 top-4">

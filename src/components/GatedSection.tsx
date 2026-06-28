@@ -97,7 +97,7 @@ export function GatedSection({
 
   if (paragraphs) {
     return (
-      <section className="mt-2">
+      <section data-rec="gate" className="mt-2">
         <Divider label="The rest" />
         <div className="prose-body anim-unblur">
           {paragraphs.map((p, i) => (
@@ -120,7 +120,7 @@ export function GatedSection({
   }
 
   return (
-    <section className="relative mt-2">
+    <section data-rec="gate" className="relative mt-2">
       {/* faux locked text bleeding up behind the gate */}
       <div className="gated-blur space-y-3" aria-hidden>
         {Array.from({ length: Math.max(8, gatedParagraphs * 3) }).map((_, i) => (
@@ -156,6 +156,7 @@ export function GatedSection({
             </p>
 
             <button
+              data-rec="unlock"
               onClick={onUnlockClick}
               disabled={busy}
               className="relative mt-5 flex w-full items-center justify-center gap-2.5 overflow-hidden rounded-lg bg-ink px-5 py-4 font-mono text-[0.84rem] uppercase tracking-[0.12em] text-paper transition hover:bg-vermilion disabled:cursor-progress"
