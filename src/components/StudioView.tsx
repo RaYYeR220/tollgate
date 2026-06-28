@@ -24,7 +24,6 @@ const SKEY = "tollgate.studio.v1";
 export function StudioView() {
   const { session, ready } = useAccess();
   const [extra, setExtra] = useState<Published[]>([]);
-  const [withdrawn, setWithdrawn] = useState(0);
   const [publishing, setPublishing] = useState(false);
   const [showPublish, setShowPublish] = useState(false);
 
@@ -34,19 +33,14 @@ export function StudioView() {
       if (raw) {
         const s = JSON.parse(raw);
         setExtra(s.extra ?? []);
-        setWithdrawn(s.withdrawn ?? 0);
       }
     } catch {}
   }, []);
 
-  const persist = (nextExtra: Published[], nextWithdrawn: number) => {
+  const persist = (nextExtra: Published[]) => {
     setExtra(nextExtra);
-    setWithdrawn(nextWithdrawn);
     try {
-      localStorage.setItem(
-        SKEY,
-        JSON.stringify({ extra: nextExtra, withdrawn: nextWithdrawn }),
-      );
+      localStorage.setItem(SKEY, JSON.stringify({ extra: nextExtra }));
     } catch {}
   };
 
@@ -66,9 +60,8 @@ export function StudioView() {
       net: net(gross),
       unlocks,
       pieces: catalogue.length,
-      available: Math.max(0, net(gross) - withdrawn),
     };
-  }, [catalogue, withdrawn]);
+  }, [catalogue]);
 
   if (ready && !session) {
     return (
@@ -133,13 +126,7 @@ export function StudioView() {
         </section>
 
         {/* payout */}
-        <PayoutPanel
-          available={totals.available}
-          lifetime={totals.net}
-          onWithdraw={() =>
-            persist(extra, withdrawn + totals.available)
-          }
-        />
+        <PayoutPanel earned={totals.net} unlocks={totals.unlocks} />
       </div>
 
       {/* content table */}
@@ -215,7 +202,7 @@ export function StudioView() {
               grossCents: 0,
               fresh: true,
             };
-            persist([item, ...extra], withdrawn);
+            persist([item, ...extra]);
             setPublishing(false);
             setShowPublish(false);
           }}
@@ -292,52 +279,35 @@ function RevenueBar({
 }
 
 function PayoutPanel({
-  available,
-  lifetime,
-  onWithdraw,
+  earned,
+  unlocks,
 }: {
-  available: number;
-  lifetime: number;
-  onWithdraw: () => void;
+  earned: number;
+  unlocks: number;
 }) {
-  const [phase, setPhase] = useState<SettlePhase | "idle">("idle");
-  const busy = phase !== "idle" && phase !== "done";
-
-  const withdraw = async () => {
-    if (available <= 0) return;
-    await simulateSettle(setPhase, { routeMs: 600, settleMs: 600 });
-    onWithdraw();
-    setPhase("idle");
-  };
-
   return (
     <aside className="rounded-xl border border-ink/15 bg-paper-2/40 p-6">
-      <div className="label-mono">Available to withdraw</div>
+      <div className="label-mono">Earned · in your wallet</div>
       <div className="mt-2 font-mono text-[2.2rem] text-ink">
-        {formatUSD(available)}
+        {formatUSD(earned)}
       </div>
       <p className="mt-2 text-[0.85rem] leading-relaxed text-ink-soft">
-        Earnings settle to your Universal Account the instant a reader unlocks —
-        no payout schedule, no minimum.
+        Paid to your Universal Account the instant a reader unlocks —
+        non-custodial, no payout schedule. It&rsquo;s already yours, spendable on
+        any chain.
       </p>
-      <button
-        onClick={withdraw}
-        disabled={busy || available <= 0}
-        className="mt-4 flex w-full items-center justify-center gap-2 rounded-lg bg-ink px-5 py-3 font-mono text-[0.78rem] uppercase tracking-[0.12em] text-paper transition hover:bg-vermilion disabled:opacity-50"
+      <a
+        href="https://arbiscan.io/address/0x4d321a3ca567224fd3667b570dba458fc4262651"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="mt-4 flex w-full items-center justify-center gap-2 rounded-lg border border-ink/20 px-5 py-3 font-mono text-[0.78rem] uppercase tracking-[0.12em] text-ink transition hover:border-vermilion hover:text-vermilion"
       >
-        {busy ? (
-          <>
-            <span className="spin inline-block h-3.5 w-3.5 rounded-full border-2 border-paper/40 border-t-paper" />
-            Withdrawing
-          </>
-        ) : (
-          "Withdraw to bank"
-        )}
-      </button>
+        Settled on Arbitrum One · view contract →
+      </a>
       <div className="mt-4 flex items-center justify-between border-t border-ink/10 pt-3">
-        <span className="label-mono">Lifetime</span>
+        <span className="label-mono">Unlocks</span>
         <span className="font-mono text-[0.82rem] text-ink">
-          {formatUSD(lifetime)}
+          {unlocks.toLocaleString()}
         </span>
       </div>
     </aside>
