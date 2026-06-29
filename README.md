@@ -13,6 +13,8 @@ abstraction — are the maker's burden, never the reader's.
 Tollgate is also a **protocol**: one verified contract, one dependency-free SDK, and an x402 rail,
 so any writer or app can put a tollgate on what they publish.
 
+**[Live demo](https://tollgate-five.vercel.app)**  ·  **[Demo video](https://youtu.be/InJlWAlmvSE)**  ·  [Verified contract](https://arbiscan.io/address/0x4d321a3ca567224fd3667b570dba458fc4262651#code)
+
 ---
 
 ## The one-tap flow
@@ -49,6 +51,9 @@ so any writer or app can put a tollgate on what they publish.
 
 ## Live on Arbitrum One
 
+- **Try it** — [tollgate-five.vercel.app](https://tollgate-five.vercel.app), a public sandbox where you
+  can walk the whole flow without spending real USDC. A [2-minute demo](https://youtu.be/InJlWAlmvSE)
+  shows it end to end.
 - **TollgateAccessRegistry** — [`0x4d321A3Ca567224fD3667B570Dba458fc4262651`](https://arbiscan.io/address/0x4d321a3ca567224fd3667b570dba458fc4262651#code) (verified)
 - **A real unlock** — an EIP-7702 **Type-4** transaction with an `authorizationList`, settling a
   cross-chain USDC micropayment on Arbitrum:
