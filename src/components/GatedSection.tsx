@@ -189,6 +189,25 @@ export function GatedSection({
                 Funds anywhere — they land on Arbitrum automatically
               </span>
             </div>
+
+            {!realMode && (
+              <div className="mt-3 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-center">
+                <span className="rounded-full border border-vermilion/30 bg-vermilion/10 px-2 py-0.5 font-mono text-[0.6rem] uppercase tracking-[0.14em] text-vermilion-deep">
+                  Sandbox
+                </span>
+                <span className="text-[0.72rem] text-ink-faint">
+                  this unlock is simulated —{" "}
+                  <a
+                    href="https://arbiscan.io/tx/0xe47e170908660a3b4200eb673ee850054e5ddd85ab3191a1846061c54f1b07b0"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-vermilion-deep underline decoration-vermilion/30 underline-offset-2"
+                  >
+                    see a real on-chain unlock ↗
+                  </a>
+                </span>
+              </div>
+            )}
           </div>
         </div>
       </div>
